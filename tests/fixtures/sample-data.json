@@ -1,0 +1,19 @@
+{
+  "notice": "All people, pets, bookings, and event IDs below are fictional examples.",
+  "customers": [
+    {"id":"customer-demo-01", "name":"Alex Rivera", "pets":["pet-demo-01"]},
+    {"id":"customer-demo-02", "name":"Jordan Lane", "pets":["pet-demo-02"]}
+  ],
+  "pets": [
+    {"id":"pet-demo-01", "name":"Maple", "customerId":"customer-demo-01"},
+    {"id":"pet-demo-02", "name":"Pippin", "customerId":"customer-demo-02"}
+  ],
+  "calendarEvents": [
+    {"id":"fictional-event-01", "source":"Rover", "title":"Maple / Alex Rivera: Boarding", "allDay":true, "startDate":"2027-03-10", "exclusiveEndDate":"2027-03-13", "description":"Fictional booking example"},
+    {"id":"fictional-event-02", "source":"Direct", "title":"Pippin / Jordan Lane: Doggy Day Care", "allDay":false, "start":"2027-03-15T09:00:00-07:00", "end":"2027-03-15T17:00:00-07:00", "description":"Source: Direct"},
+    {"id":"fictional-event-03", "source":"Rover", "title":"Maple / Alex Rivera: Boarding request", "allDay":true, "startDate":"2027-04-01", "exclusiveEndDate":"2027-04-04", "description":"Request only; do not auto-confirm"}
+  ],
+  "ownerAliases": [
+    {"calendarAlias":"A. Rivera", "customerName":"Alex Rivera", "petName":"Maple", "confirmed":true}
+  ]
+}

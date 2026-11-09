@@ -1,0 +1,15 @@
+{
+  "name": "the-barking-lot-pet-care-automation",
+  "version": "0.7.0",
+  "private": true,
+  "description": "Privacy-first Google Forms and Calendar automation for a boutique pet care operation",
+  "scripts": {
+    "test": "node --test tests/*.test.cjs",
+    "check": "node --check src/Code.js && node --check src/CalendarSync.js && node --check src/CalendarTriggerMonitor.js && node --check src/CalendarTriggerAuto.js",
+    "build": "node scripts/build.cjs",
+    "privacy:check": "node scripts/privacy-check.cjs",
+    "verify": "npm run check && npm test && npm run privacy:check && npm run build"
+  },
+  "license": "MIT",
+  "engines": {"node": ">=20"}
+}
