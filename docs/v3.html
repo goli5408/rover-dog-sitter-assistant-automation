@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#f7f1e9"><title>The Barking Lot — Smart Care Card v3 Preview</title>
+<style>
+:root{font-family:-apple-system,BlinkMacSystemFont,"Avenir Next",system-ui,sans-serif;color:#433d37;background:#f8f3ed}*{box-sizing:border-box}body{margin:0}header{text-align:center;padding:28px 14px 20px;border-bottom:1px solid #e9ded4}.brand{font:32px Georgia,serif}.sub{font:600 11px system-ui;letter-spacing:2px;color:#8a8272}.shell{margin:auto;max-width:990px;padding:18px;display:grid;grid-template-columns:minmax(0,380px) minmax(0,1fr);gap:16px}.panel{background:#fffdfa;border:1px solid #eadfd6;padding:20px;border-radius:19px}.warning{background:#faf0e8;border:1px solid #e7cfbd;padding:10px 13px;border-radius:11px;font-size:12px;color:#6c544a;margin-bottom:16px}label{display:block;font-size:13px;font-weight:650;margin:14px 0 6px}select,input,textarea{display:block;width:100%;background:white;border:1px solid #ded3c8;border-radius:11px;padding:12px;font-size:16px;color:#443d37}textarea{min-height:75px;resize:vertical}button{background:#655e4e;border:0;border-radius:12px;padding:13px 17px;color:white;font-size:15px;font-weight:650;width:100%;cursor:pointer}.secondary{background:#eee6dc;color:#443d37}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.grid>*{min-width:0}h2{font:26px Georgia,serif;margin:0}p{font-size:13px;color:#82776e}.preview{display:flex;align-items:center;flex-direction:column}canvas{width:100%;max-width:400px;aspect-ratio:3/4.5;border-radius:13px;box-shadow:0 6px 22px #43322215}.caption{font-size:12px;color:#82776e;margin-top:10px;text-align:center}.pill{display:inline-block;background:#efe7dc;color:#64594f;font-size:11px;padding:5px 8px;border-radius:30px}#status{font-size:12px;color:#7b695f;margin-top:8px}@media(max-width:730px){.shell{display:block;padding:12px}.panel{margin-bottom:14px;padding:17px}header{padding:24px 12px 14px}.brand{font-size:29px}} 
+</style></head><body>
+<header><div class="brand">The Barking Lot</div><div class="sub">THOUGHTFUL CARE · PEACE OF MIND</div></header>
+<main class="shell"><section class="panel"><span class="pill">V3 PRIVATE DATA INTEGRATION · PREVIEW</span><h2>Smart Care Card</h2><p>Select a pet, then record only what actually happened today.</p>
+<div class="warning"><strong>Demo mode:</strong> This page uses fictional sample data only. It is not connected to Notion or Rover. Do not enter real customer information in this public preview.</div>
+<label for="pet">Today's Pets</label><select id="pet"><option value="">Choose a sample pet</option><option value="p1">Sample Pup · Daycare</option><option value="p2">Demo Dog · Boarding</option></select>
+<div class="grid"><div><label for="petName">Pet name</label><input id="petName" placeholder="Select a pet" readonly></div><div><label for="date">Reporting date</label><input id="date" type="date"></div></div>
+<label for="care">Care type</label><input id="care" placeholder="Select a pet" readonly>
+<div class="grid"><div><label for="meals">Meals</label><select id="meals"><option>Not recorded</option><option>Finished all meals</option><option>Ate most of the food</option><option>Ate only a little</option><option>Did not eat</option></select></div><div><label for="water">Water</label><select id="water"><option>Not recorded</option><option>Drank as usual</option><option>Drank less than usual</option><option>Drank more than usual</option><option>Did not drink</option></select></div></div>
+<div class="grid"><div><label for="pee">Pee</label><select id="pee"><option>Not recorded</option><option>Normal</option><option>Not yet</option><option>Change noticed</option></select></div><div><label for="poop">Poop</label><select id="poop"><option>Not recorded</option><option>Normal</option><option>Not yet</option><option>Change noticed</option></select></div></div>
+<div class="grid"><div><label for="walks">Walks</label><select id="walks"><option value="">Not recorded</option><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5+">5+</option></select></div><div><label for="minutes">Walk minutes</label><input id="minutes" type="number" min="0" max="1200" placeholder="Total minutes"></div></div>
+<label for="play">Other activities (optional)</label><input id="play" placeholder="e.g. indoor play, fetch">
+<label for="notes">Notes for owner (optional)</label><textarea id="notes" placeholder="Important observations or special care"></textarea>
+<label for="photo">Pet photo (optional, processed locally)</label><input id="photo" type="file" accept="image/*">
+<div style="height:15px"></div><button id="save">Save Care Card as PNG</button><div id="status" aria-live="polite"></div>
+</section><section class="panel preview"><h2>Care Card Preview</h2><p>Mobile-friendly · single-day reporting</p><canvas id="card" width="900" height="1350" aria-label="Care card preview"></canvas><div class="caption">Unknown observations remain "Not recorded." Check all details before sharing with an owner.</div></section></main>
+<script>
+'use strict';
+const $=id=>document.getElementById(id),ctx=$('card').getContext('2d'),c=$('card');
+const samples={p1:{name:'Sample Pup',care:'Daycare'},p2:{name:'Demo Dog',care:'Boarding'}};
+let photo=null;
+function dateLocal(){const d=new Date(),y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');return y+'-'+m+'-'+day}
+$('date').value=dateLocal();
+function rounded(x,y,w,h,r,color){ctx.fillStyle=color;ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fill()}
+function text(s,x,y,size=29,color='#514940',weight='400',max=780){ctx.font=weight+' '+size+'px -apple-system,system-ui,sans-serif';ctx.fillStyle=color;ctx.fillText(s,x,y,max)}
+function wrap(s,x,y,width,lineHeight,maxLines=3,size=27){ctx.font='400 '+size+'px -apple-system,system-ui,sans-serif';let words=String(s).split(/\s+/),line='',lines=0;for(const w of words){let candidate=line?line+' '+w:w;if(ctx.measureText(candidate).width>width&&line){text(line,x,y+lines*lineHeight,size);lines++;line=w;if(lines>=maxLines)return}else line=candidate}if(line)text(line,x,y+lines*lineHeight,size)}
+function cardCell(label,value,x,y,w=367){rounded(x,y,w,123,16,'#fff');text(label.toUpperCase(),x+20,y+40,20,'#a18473','650');wrap(value,x+20,y+83,w-40,27,2,25)}
+function render(){
+ctx.clearRect(0,0,c.width,c.height);rounded(0,0,900,1350,24,'#faf4eb');rounded(0,0,900,270,24,'#eedbd0');rounded(0,240,900,30,0,'#eedbd0');
+text('THE BARKING LOT',48,70,24,'#7d685c','700');text('Daily Care',48,139,59,'#514138','600');text($('petName').value||'Pet not selected',48,204,36,'#514138','600');
+const dt=$('date').value;let dateLabel='Date not recorded';if(dt){const d=new Date(dt+'T12:00:00');dateLabel=d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}
+text(($('care').value||'Care type not recorded')+'  ·  '+dateLabel,48,246,25,'#6c625b');
+rounded(48,298,804,224,20,'#e8dfd3');
+if(photo){ctx.save();ctx.beginPath();ctx.arc(450,410,99,0,Math.PI*2);ctx.clip();const s=Math.max(198/photo.width,198/photo.height);ctx.drawImage(photo,450-photo.width*s/2,410-photo.height*s/2,photo.width*s,photo.height*s);ctx.restore()}else{text('Your pet’s photo',321,420,30,'#97877a','500');}
+cardCell('Meals',$('meals').value,48,550);cardCell('Water',$('water').value,485,550);
+cardCell('Pee',$('pee').value,48,700);cardCell('Poop',$('poop').value,485,700);
+rounded(48,850,804,176,16,'#fff');text('ACTIVITIES',70,893,20,'#a18473','650');
+const w=$('walks').value,mins=$('minutes').value;let summary=w===''?'Not recorded':w+' walk'+(w==='1'?'':'s')+(mins!==''?' · '+mins+' min total':'');
+wrap(summary,70,936,760,30,1,28);if($('play').value.trim())wrap($('play').value.trim(),70,982,760,27,1,24);
+const notes=$('notes').value.trim();if(notes){rounded(48,1050,804,176,16,'#fff');text('NOTES FOR OWNER',70,1093,20,'#a18473','650');wrap(notes,70,1140,760,32,2,26)}
+text('Thoughtful care for every pet.',226,1301,24,'#a08a7d','500');
+}
+$('pet').addEventListener('change',()=>{const p=samples[$('pet').value];$('petName').value=p?p.name:'';$('care').value=p?p.care:'';render()});
+for(const id of ['date','meals','water','pee','poop','walks','minutes','play','notes'])$(id).addEventListener('input',render);
+$('photo').addEventListener('change',e=>{const f=e.target.files[0];if(!f){photo=null;render();return}if(!f.type.startsWith('image/'))return;const url=URL.createObjectURL(f),img=new Image();img.onload=()=>{photo=img;URL.revokeObjectURL(url);render()};img.onerror=()=>{URL.revokeObjectURL(url);$('status').textContent='Photo could not be loaded.'};img.src=url});
+$('save').addEventListener('click',()=>{if(!$('pet').value){$('status').textContent='Choose a sample pet before saving.';return}if(['Did not eat'].includes($('meals').value)||['Did not drink'].includes($('water').value)){$('status').textContent='Important: notify the owner promptly about missed food or water; do not rely only on the card.'}else $('status').textContent='Card generated from the entries above; verify before sending.';const a=document.createElement('a');a.download=($('petName').value||'pet').replace(/[^a-z0-9_-]+/gi,'_')+'-care-'+$('date').value+'.png';a.href=c.toDataURL('image/png');a.click()});
+render();
+</script></body></html>
