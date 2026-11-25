@@ -12,7 +12,7 @@ permissions:
   id-token: write
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 jobs:
   deploy:
     environment:
@@ -30,6 +30,8 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: docs
+      - name: Wait for artifact indexing
+        run: sleep 20
       - name: Deploy website
         id: deployment
         uses: actions/deploy-pages@v4
